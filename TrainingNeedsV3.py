@@ -80,6 +80,10 @@ def parse_file():
                         csv_writer.writerow(line)
             csv_file.seek(0)        # Reset to beginning of dictionary
     # Use pandas to create xlsx files
+    needs_crane = pd.DataFrame
+    needs_pc = pd.DataFrame
+    needs_fork = pd.DataFrame
+    needs_aerial = pd.DataFrame
     for name in f_name_list:
         print(name)
         needs = pd.read_csv(name)
