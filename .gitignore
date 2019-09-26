@@ -1,0 +1,11 @@
+pandas.txt
+pyvenv.cfg
+
+*.png
+*.csv
+
+.idea/
+Include/
+Lib/
+output/
+Scripts/
