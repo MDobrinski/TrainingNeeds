@@ -13,7 +13,6 @@ import pandas as pd
 
 def get_file():
     global filename
-    global out_path
     filename = filedialog.askopenfilename(initialdir="/Users/mdobrinski/data", title="Select A File", filetypes=[
         ("CSV files", "*.csv")])
     out_path = os.getcwd() + "\\output"
@@ -114,7 +113,6 @@ file.add_command(label='Exit', command=lambda: end_prog())
 help_.add_command(label='About', command=lambda: about_message())
 
 filename = "No file"
-out_path = ""
 l_text = tk.StringVar()
 result_text = tk.StringVar()
 result_text.set("Results: ")
