@@ -96,6 +96,14 @@ def parse_file():
         name = name.replace('.csv', '.xlsx')
         writer = pd.ExcelWriter(name, engine='xlsxwriter')
         needs.to_excel(writer, index=False)
+        needs_crane = needs.loc[needs['Item_ID'] == 56]
+        needs_crane.to_excel(writer, sheet_name='Crane', index=False)
+        needs_pc = needs.loc[needs['Item_ID'] == 83]
+        needs_pc.to_excel(writer, sheet_name='Pressure', index=False)
+        needs_fork = needs.loc[needs['Item_ID'] == 32]
+        needs_fork.to_excel(writer, sheet_name='Fork', index=False)
+        needs_aerial = needs.loc[needs['Item_ID'] == 2]
+        needs_aerial.to_excel(writer, sheet_name='Aerial', index=False)
         writer.save()
     print("File completed!")
     result_text.set("Results: File completed!")
