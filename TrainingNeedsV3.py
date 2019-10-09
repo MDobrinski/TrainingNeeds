@@ -15,7 +15,8 @@ def get_file():
     global filename
     filename = filedialog.askopenfilename(initialdir="/Users/mdobrinski/data", title="Select A File", filetypes=[
         ("CSV files", "*.csv")])
-    out_path = os.getcwd() + "\\output"
+    print(os.path.dirname(filename))
+    out_path = os.path.dirname(filename) + "\\output"
     if os.path.exists(out_path):
         print("***** The output path exists ********* ")
         os.chdir(out_path)
