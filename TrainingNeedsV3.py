@@ -1,6 +1,7 @@
 import csv
 import datetime
 import os
+import xlsxwriter
 
 import tkinter as tk
 from tkinter import filedialog
@@ -15,7 +16,7 @@ def get_file():
     global filename
     filename = filedialog.askopenfilename(initialdir="/Users/mdobrinski/data", title="Select A File", filetypes=[
         ("CSV files", "*.csv")])
-    print(os.path.dirname(filename))
+#   print(os.path.dirname(filename))
     out_path = os.path.dirname(filename) + "\\output"
     if os.path.exists(out_path):
         print("***** The output path exists ********* ")
@@ -63,7 +64,7 @@ def parse_file():
         for district, loc in districts.items():
 
             # Filter each locations training needs
-            f_name = current_date + loc + "_Learning" + ".csv"
+            f_name = current_date + loc + "_Learning_Needs" + ".csv"
             f_name_list.append(f_name)
 
             with open(f_name, 'w') as new_file:
@@ -92,8 +93,10 @@ def parse_file():
         needs['Days Remaining'] = needs['Days Remaining'].str.replace(',', '')
         needs['Days Remaining'] = pd.to_numeric(needs['Days Remaining'])
         needs.columns = [col.replace(" ", "_") for col in needs]
-        needs.to_excel(name.replace('.csv', '.xlsx'), index=False)
-
+        name = name.replace('.csv', '.xlsx')
+        writer = pd.ExcelWriter(name, engine='xlsxwriter')
+        needs.to_excel(writer, index=False)
+        writer.save()
     print("File completed!")
     result_text.set("Results: File completed!")
 
