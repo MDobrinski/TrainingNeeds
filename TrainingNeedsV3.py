@@ -59,8 +59,9 @@ def parse_file():
                      'Signal Hill, CA (CA002)' : '_SHCA',
                      'Weatherford, OK (OK004)' : '_WOK',
                      'Williston, ND - (Wireline) (ND009)' : '_WND',
-                     'Williston, ND-CH (ND002)' : '_WND2'}
-
+                     'Williston, ND-CH (ND002)' : '_WND2',
+                     '656 FT. Lupton Colorado (CO004)' : '_FLCO'}
+        
         for district, loc in districts.items():
 
             # Filter each locations training needs
@@ -97,12 +98,16 @@ def parse_file():
         writer = pd.ExcelWriter(name, engine='xlsxwriter')
         needs.to_excel(writer, index=False)
         needs_crane = needs.loc[needs['Item_ID'] == 56]
+        needs_crane = needs_crane.sort_values('Days_Remaining')
         needs_crane.to_excel(writer, sheet_name='Crane', index=False)
         needs_pc = needs.loc[needs['Item_ID'] == 83]
+        needs_pc = needs_pc.sort_values('Days_Remaining')
         needs_pc.to_excel(writer, sheet_name='Pressure', index=False)
         needs_fork = needs.loc[needs['Item_ID'] == 32]
+        needs_fork = needs_fork.sort_values('Days_Remaining')
         needs_fork.to_excel(writer, sheet_name='Fork', index=False)
         needs_aerial = needs.loc[needs['Item_ID'] == 2]
+        needs_aerial = needs_aerial.sort_values('Days_Remaining')
         needs_aerial.to_excel(writer, sheet_name='Aerial', index=False)
         writer.save()
     print("File completed!")
