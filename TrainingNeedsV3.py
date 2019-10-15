@@ -60,7 +60,8 @@ def parse_file():
                      'Weatherford, OK (OK004)' : '_WOK',
                      'Williston, ND - (Wireline) (ND009)' : '_WND',
                      'Williston, ND-CH (ND002)' : '_WND2',
-                     '656 FT. Lupton Colorado (CO004)' : '_FLCO'}
+                     '656 FT. Lupton Colorado (CO004)' : '_FLCO',
+                     'Weatherford, OK DOT Train (OK003)' : '_WOKT'}
         
         for district, loc in districts.items():
 
