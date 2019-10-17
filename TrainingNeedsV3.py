@@ -58,8 +58,8 @@ def parse_file():
                      'Shafter, CA (CA001)' : '_SCA',
                      'Signal Hill, CA (CA002)' : '_SHCA',
                      'Weatherford, OK (OK004)' : '_WOK',
-                     'Williston, ND - (Wireline) (ND009)' : '_WND',
-                     'Williston, ND-CH (ND002)' : '_WND2',
+                     'Williston, ND - (Wireline) (ND009)' : '_WND2',
+                     'Williston, ND-CH (ND002)' : '_WND',
                      '656 FT. Lupton Colorado (CO004)' : '_FLCO',
                      'Weatherford, OK DOT Train (OK003)' : '_WOKT'}
         
