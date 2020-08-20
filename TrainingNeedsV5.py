@@ -53,16 +53,11 @@ def parse_file():
 
         districts = {'Charlotte, TX (TX006)' : '_CTX',
                      'Greeley, CO (CO008)' : '_GCO',
-                     'Midland, TX-CH (TX012)' : '_MTX',
                      'San Angelo, TX (TX020)' : '_SATX',
-                     'Shafter, CA (CA001)' : '_SCA',
-                     'Signal Hill, CA (CA002)' : '_SHCA',
-                     'Weatherford, OK (OK004)' : '_WOK',
-                     'Williston, ND - (Wireline) (ND009)' : '_WND2',
-                     'Williston, ND-CH (ND002)' : '_WND',
                      '656 FT. Lupton Colorado (CO004)' : '_FLCO',
-                     'Weatherford, OK DOT Train (OK003)' : '_WOKT'}
-        
+                     'Weatherford, OK (OK004)' : '_WOK',
+                     '30 Williston (ND006)' : '_WND'}
+
         for district, loc in districts.items():
 
             # Filter each locations training needs
@@ -71,23 +66,21 @@ def parse_file():
 
             with open(f_name, 'w') as new_file:
                 fieldnames = ['Item Type', 'Item ID', 'Item Title', 'User ID', 'Last Name', 'First Name',
-                              'Days Remaining', 'Job Location', 'Supervisor ID', 'Supervisor Last Name',
-                              'Supervisor First Name']
+                              'Days Remaining', 'Job Location', 'Job Code', 'Manager ID', 'Manager Last Name',
+                              'Manager First Name']
                 csv_writer = csv.DictWriter(new_file, fieldnames=fieldnames, delimiter=',')
                 csv_writer.writeheader()
                 for line in csv_reader:
                     if (line.get('Job Location', None) == district) and (((line.get('Item ID', None) == '55')
                             or (line.get('Item ID', None) == '56') or (line.get('Item ID', None) == '57') or
-                            (line.get('Item ID', None) == '83') or (line.get('Item ID', None) == '2') or
-                            (line.get('Item ID', None) == '32'))):
+                            (line.get('Item ID', None) == '83'))):
                         # print(line)
                         csv_writer.writerow(line)
             csv_file.seek(0)        # Reset to beginning of dictionary
     # Use pandas to create xlsx files
     needs_crane = pd.DataFrame
     needs_pc = pd.DataFrame
-    needs_fork = pd.DataFrame
-    needs_aerial = pd.DataFrame
+
     for name in f_name_list:
         print(name)
         needs = pd.read_csv(name)
@@ -104,12 +97,6 @@ def parse_file():
         needs_pc = needs.loc[needs['Item_ID'] == 83]
         needs_pc = needs_pc.sort_values('Days_Remaining')
         needs_pc.to_excel(writer, sheet_name='Pressure', index=False)
-        needs_fork = needs.loc[needs['Item_ID'] == 32]
-        needs_fork = needs_fork.sort_values('Days_Remaining')
-        needs_fork.to_excel(writer, sheet_name='Fork', index=False)
-        needs_aerial = needs.loc[needs['Item_ID'] == 2]
-        needs_aerial = needs_aerial.sort_values('Days_Remaining')
-        needs_aerial.to_excel(writer, sheet_name='Aerial', index=False)
         writer.save()
     print("File completed!")
     result_text.set("Results: File completed!")

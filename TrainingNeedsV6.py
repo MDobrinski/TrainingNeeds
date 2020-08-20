@@ -43,21 +43,61 @@ def end_prog():
     root.destroy()
 
 
-def trim_file():
-    global filename
+def parse_file():
+    f_name_list = []
     current_date = datetime.date.today().strftime("%m%d%Y")
 
     # Open data file for reading into dictionary
-    data = pd.read_csv(filename, index_col="Item Type")
+    with open(filename, 'r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
 
-    # dropping unwanted columns
-    data.drop(["Revision Date", "Revision Number", "Active User", "Middle Initial", "Assignment Type ID",
-               "Assignment Type", "Required", "Assignment Date", "Required Date", "Expiration Date",
-               "Preferred Time zone", "Organization ID", "Organization Description", "Job Location ID",
-               "Job Code ID", "Job Code", "Employee Status ID", "Employee Status", "Employee Type ID",
-               "Employee Type", "Supervisor Middle Initial"], axis=1, inplace=True, errors='ignore')
+        districts = {'Charlotte, TX (TX006)' : '_CTX',
+                     'Greeley, CO (CO008)' : '_GCO',
+                     'San Angelo, TX (TX020)' : '_SATX',
+                     '656 FT. Lupton Colorado (CO004)' : '_FLCO',
+                     'Weatherford, OK (OK004)' : '_WOK',
+                     '30 Williston (ND006)' : '_WND'}
 
-    data.to_csv(filename)
+        for district, loc in districts.items():
+
+            # Filter each locations training needs
+            f_name = current_date + loc + "_Learning_Needs" + ".csv"
+            f_name_list.append(f_name)
+
+            with open(f_name, 'w') as new_file:
+                fieldnames = ['Item Type', 'Item ID', 'Item Title', 'User ID', 'Last Name', 'First Name',
+                              'Days Remaining', 'Job Location', 'Job Code', 'Manager ID', 'Manager Last Name',
+                              'Manager First Name']
+                csv_writer = csv.DictWriter(new_file, fieldnames=fieldnames, delimiter=',')
+                csv_writer.writeheader()
+                for line in csv_reader:
+                    if (line.get('Job Location', None) == district) and (((line.get('Item ID', None) == '55')
+                            or (line.get('Item ID', None) == '56') or (line.get('Item ID', None) == '57') or
+                            (line.get('Item ID', None) == '83'))):
+                        # print(line)
+                        csv_writer.writerow(line)
+            csv_file.seek(0)        # Reset to beginning of dictionary
+    # Use pandas to create xlsx files
+    needs_crane = pd.DataFrame
+    needs_pc = pd.DataFrame
+
+    for name in f_name_list:
+        print(name)
+        needs = pd.read_csv(name)
+        needs['Days Remaining'] = needs['Days Remaining'].apply(str)
+        needs['Days Remaining'] = needs['Days Remaining'].str.replace(',', '')
+        needs['Days Remaining'] = pd.to_numeric(needs['Days Remaining'])
+        needs.columns = [col.replace(" ", "_") for col in needs]
+        name = name.replace('.csv', '.xlsx')
+        writer = pd.ExcelWriter(name, engine='xlsxwriter')
+        needs.to_excel(writer, index=False)
+        needs_crane = needs.loc[needs['Item_ID'] == 56]
+        needs_crane = needs_crane.sort_values('Days_Remaining')
+        needs_crane.to_excel(writer, sheet_name='Crane', index=False)
+        needs_pc = needs.loc[needs['Item_ID'] == 83]
+        needs_pc = needs_pc.sort_values('Days_Remaining')
+        needs_pc.to_excel(writer, sheet_name='Pressure', index=False)
+        writer.save()
     print("File completed!")
     result_text.set("Results: File completed!")
 
@@ -67,7 +107,7 @@ def trim_file():
 
 root = tk.Tk()  # ************ Main (root) Window
 root.option_add('*tearOff', False)
-root.title('Trim Training Needs Report')
+root.title('Parse Training Needs Report')
 root.geometry('650x350+200+200')
 root.minsize(650, 300)
 menubar = Menu(root)
@@ -113,7 +153,7 @@ l_text.set(filename)
 
 open_btn = ttk.Button(mainframe, text="Open File", command=get_file)
 open_btn.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
-parse_btn = ttk.Button(mainframe, text="Trim File", command=trim_file)
+parse_btn = ttk.Button(mainframe, text="Parse File", command=parse_file)
 parse_btn.grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
 quit_btn = ttk.Button(mainframe, text="Exit", command=end_prog)
 quit_btn.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
